@@ -1,0 +1,12 @@
+# data never ships (scrub_check.py enforces; belt+suspenders)
+*.omx
+*_pm.csv
+*_am.csv
+*.bin
+Readings*.csv
+link_performance*.csv
+trajectory_subarea.parquet
+node.csv
+link.csv
+demand*.csv
+__pycache__/

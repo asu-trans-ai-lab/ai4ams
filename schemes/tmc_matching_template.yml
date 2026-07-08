@@ -1,0 +1,87 @@
+# ============================================================================
+# TMC-to-GMNS Matching Scheme — REUSABLE TEMPLATE
+# ----------------------------------------------------------------------------
+# One file drives the whole TMC alignment step (Step 4 of the corridor plan)
+# for ANY corridor/subarea: engine choice, matching rules, repair pass, and
+# output contracts. Copy this file per corridor and fill the <angle-bracket>
+# placeholders. Consumed by (FR-7/FR-8, to be built):
+#     python -m subarea2gmns tmc-match --scheme <this_file>.yml
+# Filled examples beside this file:
+#     tmc_matching_i66.yml       (I-66 EB/WB, NVTA — crosswalk already exists)
+#     tmc_matching_i395hov.yml   (I-395 HOV NB/SB — fresh match, shows reuse)
+# All defaults below are the values proven on prior corridors (Module B I-10
+# reference: 90% match, coverage ratio 1.02; NVTA 2026 map-matching repo:
+# 78-80% matched share, ~73 ft avg offset).
+# ============================================================================
+
+corridor:
+  name: <short_id>                 # e.g. i66_eb — used to name all outputs
+  road: "<road name as it appears in TMC_Identification 'road' column>"
+  directions: [<EASTBOUND|WESTBOUND|NORTHBOUND|SOUTHBOUND>, ...]
+  facility: <gp|hov|express>       # which lane group these TMCs observe
+
+inputs:
+  tmc_identification: <path to TMC_Identification.csv>   # RITIS/INRIX segment table
+  readings:                        # one or more speed files (5-min native)
+    - <path to Readings.csv>       # columns: tmc_code, measurement_tstamp, speed[, travel_time, confidence]
+  network:
+    dir: <path to GMNS network dir with node.csv + link.csv>
+    profile: <nvta|aztdm|...>      # schema profile (FR-3): column names, link_type semantics
+    crs: <EPSG:xxxx>               # working projected CRS; TMC lat/lon assumed EPSG:4326
+
+# If a verified crosswalk already exists, reuse it and SKIP matching entirely.
+# (Lesson: never re-match what has already been human-verified.)
+existing_crosswalk:
+  file: null                       # e.g. .../full_tmc_to_link.csv ; null = run the engines
+  accept_min_match_share: 0.75     # sanity gate before trusting a reused crosswalk
+
+engine:
+  mode: both                       # engine1_hmm | engine2_geometric | both
+  # engine1 = trace2route most-likely connected path (C++/pybind, HMM-style)
+  # engine2 = geometric projection (12x faster; no connectivity guarantee)
+  # both    = run E1+E2, compare, keep E1, flag disagreements
+  agreement_metric: jaccard
+  agreement_min: 0.80              # per-agent link-set Jaccard E1 vs E2 below this -> flag for review
+  trace_conversion:                # TMC -> trace.csv contract
+    points_per_tmc: 2              # segment endpoints
+    chunk_tmcs: 2                  # <=2 TMCs (~2 mi) per agent so path cannot wander
+    snap_od_nodes: true            # cKDTree snap of o/d node on first trace row
+    blocked_link_types: [connector]  # never route through centroid connectors
+
+matching_rules:
+  gp_link_types: ["<t1>", "<t2>"]  # link_type codes eligible for this facility — STRINGS
+                                   # (known pitfall: compared as strings, not ints)
+  direction_consistent: true       # link bearing vs TMC direction must agree
+  corridor_sequence_order: true    # matched links must be monotone in road_order/milepost
+  fallback_snap:                   # 3rd pass for links no TMC claimed
+    max_distance_m: 150
+    max_bearing_deg: 35
+  min_coverage_ratio: 0.95         # matched length / TMC length (target ~1.0; NOT link count)
+  length_from_geometry: true       # always derive length from WKT (unit-safety lesson X1)
+
+repair:                            # FR-8 — for TMCs still unmatched after 3 passes
+  sequence_interpolation: true     # interior gap between two matched TMCs -> interpolate along chain
+  report_residuals: true           # ALWAYS emit unmatched list; never silently fill
+  fail_if_matched_share_below: 0.70
+
+speed_profile:                     # FR-7 — attach observed speeds through the crosswalk
+  native_interval_min: 5
+  emit_intervals_min: [5, 15, 60]
+  day_filter: weekday              # weekday | all | custom list of dates
+  aggregation: length_weighted     # when one link spans several TMCs (and vice versa)
+  fields_passthrough: [travel_time_minutes, reference_speed, confidence_score]  # if present
+
+outputs:
+  dir: <output dir>
+  files:
+    tmc_to_link_mapping: "{name}_tmc_to_link.csv"
+      # tmc_code, link_id, match_score, engine, direction, road_order,
+      # start_milepost, end_milepost, offset_ft, match_pass (claim|fill|snap|interp)
+    link_speed_profile: "{name}_link_speed_profile.csv"
+      # link_id, tmc_code, match_score, direction, timestamp|time_period,
+      # observed_speed, observed_travel_time
+    corridor_speed_profile: "{name}_corridor_speed_profile.csv"
+      # corridor space-time table (road_order x time bin) for heatmaps/CBI
+    qa_report: "{name}_tmc_match_qa.md"
+      # matched share, coverage ratio, avg offset, E1-vs-E2 jaccard,
+      # sequence violations, residual (unmatched) TMC list

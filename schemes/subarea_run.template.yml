@@ -1,0 +1,74 @@
+# subarea_run.template.yml — AI4AMS master scheme (v1 schema, sanitized template)
+# Copy, fill <placeholders>, run: python -m subarea.process run <your>.yml
+project:
+  name: <case_name>
+  run_id: <corridor>_<period>_fast_response_v01
+  description: <one sentence>
+
+network:
+  gmns_folder: <path to GMNS folder with node.csv + link.csv>
+  id_bridge_folder: <path to id_bridge registry folder>   # every layer registers its mapping
+  link_id_space: original            # original | internal
+
+subarea:
+  name: <corridor>_focus_area
+  focus_rule: {field: <e.g. STREETNAME>, contains: "<route name>"}
+  focus_link_file: null              # explicit list overrides focus_rule
+  buffer_policy: {enabled: true, type: interchange_depth, depth: 1}
+  boundary_gate_rule: one_endpoint_inside
+
+time:
+  analysis_start_time: "<HH:MM>"
+  analysis_end_time: "<HH:MM>"
+  time_interval_min: 5
+  warm_start_link_performance: <path to converged link_performance.csv, or null>
+
+assignment:
+  number_of_iterations: 2            # 2 = screening label; converged runs for final numbers
+  fast_response_mode: true
+  superzone_hier:
+    enabled: true
+    method: focusing_v2              # measured-significance tiers (FOCUSING Stage-FO)
+    cover_sig: 0.90                  # accuracy knob (validated: 0.90 -> gateway-OD R2 0.966)
+    cover_less: 0.99
+    protect_zone_ids_range: [<ext_station_first>, <ext_station_last>]   # NEVER aggregated
+    map_output: zone_superzone_map.csv
+
+demand_classes:
+  - {class_id: GP,      modes: [<...>], description: general purpose}
+  - {class_id: HOV,     modes: [<...>], description: HOV eligible}
+  - {class_id: EXPRESS, modes: [],      description: toll/express eligible split}
+
+managed_lane_policy:
+  enabled: true
+  lane_group_rules:                  # attribute-pattern rules; first match wins; NEVER in code
+    - {match: {allowed_use: "<pattern>"}, lane_group: <GROUP>}
+    - {match: {}, lane_group: GP}
+  passthrough_fields: [allowed_use, toll, link_type, lanes, capacity, free_speed]
+
+behavioral_attributes:
+  enabled: true
+  fields: [vot, vor, bht, toll_sensitivity, reliability_sensitivity]
+  vot_policy: <named policy, e.g. vtrc_22r5>
+
+trajectory_export:                   # DTAT v1 contract (docs/KERNEL_SUBAREA_EXPORT_DESIGN.md)
+  enabled: true
+  output_scope: subarea_only
+  include_buffer_links: true
+  include_full_path: false
+  include_link_entry_exit_times: true
+  include_gate_events: true
+  include_policy_fields: false       # join static link attributes downstream
+  binary_output: trajectory_subarea.bin
+  parquet_output: trajectory_subarea.parquet
+  jsonl_sample_output: trajectory_subarea_sample.jsonl
+  geojson_sample_output: trajectory_subarea_sample.geojson
+  max_jsonl_sample_records: 50000
+
+postprocess:
+  produce_gateway_od: true
+  produce_cbi_inputs: true
+  produce_gui4gmns_layer: true
+  produce_kml_or_kepler_layer: true
+
+output_folder: <path to run output folder>
