@@ -1,0 +1,62 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI4AMS — Review Portal</title>
+<style>
+:root{--bg:#14181d;--panel:#1d232b;--line:#2c3540;--ink:#d8dee6;--mut:#8a94a3;--acc:#4db8ff;--ok:#57d977}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 system-ui,Segoe UI,sans-serif}
+header{padding:28px 20px 10px;text-align:center}
+h1{margin:0;font-size:26px;color:var(--acc)}
+.sub{color:var(--mut);max-width:840px;margin:8px auto}
+.tag{color:var(--ok);font-weight:600}
+main{max-width:1100px;margin:0 auto;padding:10px 16px 60px}
+.fig{max-width:100%;border:1px solid var(--line);border-radius:10px;margin:14px 0}
+h2{font-size:15px;color:var(--acc);border-bottom:1px solid var(--line);padding-bottom:6px;margin:30px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:block;color:var(--ink);text-decoration:none;transition:border-color .15s}
+.card:hover{border-color:var(--acc)}
+.card b{color:var(--acc);font-size:14.5px}
+.card p{margin:6px 0 0;color:var(--mut);font-size:12.5px}
+.badge{display:inline-block;font-size:10px;font-weight:700;border:1px solid var(--ok);color:var(--ok);border-radius:4px;padding:0 7px;margin-left:6px;vertical-align:2px}
+footer{color:var(--mut);font-size:11.5px;text-align:center;padding:20px;border-top:1px solid var(--line)}
+a{color:var(--acc)}
+</style></head><body>
+<header>
+<h1>AI4AMS — Agentic AI for Translational AMS Modeling</h1>
+<div class="sub">A scheme-driven, engine-agnostic, quality-gated framework for open, reproducible corridor and subarea simulation.<br>
+<span class="tag">The engine is replaceable; the scheme, contracts, gates, and reproducible process are the foundation.</span></div>
+</header>
+<main>
+
+<img class="fig" src="docs/pipeline_overview.png" alt="Open Interoperable AMS Pipeline — full framework flowchart">
+
+<h2>Dashboards — see the process and the results</h2>
+<div class="grid">
+<a class="card" href="examples/dashboards/I66_PROCESS_DASHBOARD.html"><b>① The 10-Step Process Dashboard</b><span class="badge">I-66 case</span>
+<p>Every pipeline step with readiness state, have/build/decide cards, data inventory, feature register, decisions, quality-gate panel, phase plan. The planner's map of the whole engagement.</p></a>
+<a class="card" href="examples/dashboards/I66_STATS_DASHBOARD.html"><b>② Key Statistics Dashboard</b><span class="badge">measured</span>
+<p>Live quality gates G1–G8 (incl. the published failure), run-time ledger bars (65 s/scenario vs the killed 38-min run), FOCUSING zone tiers, head-to-head reproduction targets.</p></a>
+<a class="card" href="cases/i66_nvta/network_map.html"><b>③ Network &amp; Trajectory Map</b><span class="badge">interactive</span>
+<p>The I-66 subarea on a real map: top-1,000 weighted trajectories from the kernel's trajectory export, colored by weight, click for OD/gates/times. This is the DTAT contract, visible.</p></a>
+<a class="card" href="examples/dashboards/i17_dashboard.html"><b>④ I-17 CBI Dashboard</b><span class="badge">flex lanes</span>
+<p>Corridor congestion-bottleneck dashboard (MP 244–252 flex-lane segment): direction toggle, speed heatmap, trajectory panel, KPI strip — the second-corridor archetype.</p></a>
+<a class="card" href="examples/dashboards/I10_dashboard.html"><b>⑤ I-10 Route Dashboard</b>
+<p>Route-level CBI / harsh-braking analysis example — the same contracts on a third corridor.</p></a>
+</div>
+
+<h2>The case, the process, the receipts</h2>
+<div class="grid">
+<a class="card" href="cases/i66_nvta/CASE_I66.md"><b>I-66 Case Walkthrough</b>
+<p>Step-by-step with measured wall times (prepare 1.6 s → assignment 65 s), gate outcomes, and the public post-run artifacts: gateway OD (11,115 pairs), tier map, quality gates JSON, trajectory sample.</p></a>
+<a class="card" href="docs/WORKFLOW_RUNBOOK.md"><b>Workflow Runbook (S0–S10)</b>
+<p>The five principles, calibration mini-loops with hard caps, assumption flags [A1–A9], the mandatory gmns_ready-before-kernel gate, and the failure log — nothing hidden.</p></a>
+<a class="card" href="registers/expert_gap_validation_register.csv"><b>Expert Validation Register</b>
+<p>22 machine-checkable gates distilled from FHWA 2013/2021/2022 reports and public workshop material — every practitioner pain mapped to a design response and an artifact.</p></a>
+<a class="card" href="docs/KERNEL_SUBAREA_EXPORT_DESIGN.md"><b>DTAT Trajectory Contract</b>
+<p>The kernel-side subarea trajectory/event export: streamed, clipped, weighted, policy-aware — no engine lock-in, R²=1.000 exactness proof.</p></a>
+<a class="card" href="DISCLAIMER.md"><b>Disclaimer</b>
+<p>Education &amp; research product. FHWA reports referenced and acknowledged; no endorsement; not a standard.</p></a>
+</div>
+
+</main>
+<footer>ASU Trans+AI Lab · MIT License · agency data never distributed — dashboards embed derived/aggregate measures only ·
+<a href="https://github.com/asu-trans-ai-lab/ai4ams">github.com/asu-trans-ai-lab/ai4ams</a></footer>
+</body></html>

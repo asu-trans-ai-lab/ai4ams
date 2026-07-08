@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>I-66 Subarea — Network &amp; Trajectory Map (AI4AMS)</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+html,body{margin:0;height:100%;background:#14181d;color:#d8dee6;font:13px system-ui,Segoe UI,sans-serif}
+#bar{position:absolute;z-index:1000;top:10px;left:10px;right:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+ background:rgba(20,24,29,.92);border:1px solid #2c3540;border-radius:8px;padding:8px 14px}
+#bar b{color:#4db8ff}#bar .mut{color:#8a94a3;font-size:11.5px}
+#map{height:100%}
+.kpi{background:#232b35;border:1px solid #2c3540;border-radius:6px;padding:2px 10px;text-align:center}
+.kpi .v{font-weight:700;color:#4db8ff}.kpi .l{font-size:9.5px;color:#8a94a3}
+input[type=range]{accent-color:#4db8ff;width:140px}
+#legend{position:absolute;z-index:1000;bottom:14px;left:10px;background:rgba(20,24,29,.92);border:1px solid #2c3540;border-radius:8px;padding:8px 12px;font-size:11px;color:#8a94a3}
+.sw{display:inline-block;width:22px;height:4px;border-radius:2px;vertical-align:middle;margin-right:5px}
+</style></head><body>
+<div id="bar"><b>I-66 Subarea — Trajectories</b>
+<span class="mut">top-1,000 weighted trajectory records streamed by the kernel (DTAT contract) · PM period · click a line</span>
+<span class="kpi"><div class="v" id="nTraj">…</div><div class="l">trajectories shown</div></span>
+<span class="kpi"><div class="v" id="wSum">…</div><div class="l">weighted trips (shown)</div></span>
+<label class="mut">min weight <input id="minw" type="range" min="0" max="100" value="0"> <span id="minwv">0</span></label>
+</div>
+<div id="map"></div>
+<div id="legend"><span class="sw" style="background:#57d977"></span>lower weight&nbsp;&nbsp;
+<span class="sw" style="background:#ffb45f"></span>mid&nbsp;&nbsp;<span class="sw" style="background:#ff5f5f"></span>highest weight
+&nbsp;·&nbsp;width ∝ weight &nbsp;·&nbsp; basemap © OpenStreetMap/CARTO</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map=L.map('map',{zoomControl:true}).setView([38.87,-77.4],10);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+ {attribution:'© OpenStreetMap © CARTO',maxZoom:19}).addTo(map);
+let layer=null,feats=[];
+const ramp=t=>t<0.5?`rgb(${87+((255-87)*t*2)|0},${217-((217-180)*t*2)|0},${119-((119-95)*t*2)|0}`+')':`rgb(255,${180-((180-95)*(t-.5)*2)|0},95)`;
+function draw(minw){
+ if(layer)layer.remove();
+ let wmax=0,shown=0,wsum=0;
+ feats.forEach(f=>wmax=Math.max(wmax,f.properties.weight));
+ layer=L.geoJSON({type:'FeatureCollection',features:feats.filter(f=>f.properties.weight>=minw)},{
+  style:f=>{const t=Math.min(1,f.properties.weight/wmax);
+   return{color:ramp(t),weight:1+4*t,opacity:.75};},
+  onEachFeature:(f,l)=>{const p=f.properties;shown++;wsum+=p.weight;
+   l.bindPopup(`<b>trajectory ${p.trajectory_id}</b><br>OD zones ${p.o} → ${p.d}<br>`+
+    `weight <b>${p.weight}</b> trips<br>gates ${p.entry_gate||'—'} → ${p.exit_gate||'—'}<br>`+
+    `subarea entry ${p.entry_t} min · in-subarea time ${p.subarea_tt} min`);}
+ }).addTo(map);
+ document.getElementById('nTraj').textContent=shown.toLocaleString();
+ document.getElementById('wSum').textContent=Math.round(wsum).toLocaleString();
+}
+fetch('artifacts/trajectory_subarea_sample.geojson').then(r=>r.json()).then(g=>{
+ feats=g.features;
+ draw(0);
+ try{map.fitBounds(layer.getBounds().pad(0.08));}catch(e){}
+ const wmax=Math.max(...feats.map(f=>f.properties.weight));
+ const sl=document.getElementById('minw');
+ sl.oninput=()=>{const mw=(+sl.value/100)*wmax*0.5;
+  document.getElementById('minwv').textContent=Math.round(mw);draw(mw);};
+}).catch(e=>{
+ document.getElementById('bar').insertAdjacentHTML('beforeend',
+  '<span style="color:#ff5f5f">could not load artifacts/trajectory_subarea_sample.geojson — open via a web server or GitHub Pages, not file://</span>');
+});
+</script></body></html>
