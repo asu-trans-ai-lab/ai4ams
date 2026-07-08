@@ -6,6 +6,16 @@ corridor and subarea simulation.*
 > **The engine is replaceable; the scheme, contracts, gates, and reproducible process are
 > the foundation.**
 
+![Open Interoperable AMS Pipeline — scheme-driven, engine-agnostic, interoperable framework
+for reproducible corridor and subarea analysis](docs/pipeline_overview.png)
+
+*The pipeline at a glance: why change is needed (ad-hoc tools, fragmented workflows, hidden
+assumptions) → five core design principles → the scheme file as orchestration → participating
+engines (TransModeler, SUMO, DTALite, DLSIM, Aimsun, VISSIM, …) → what the framework delivers
+(corridor screening → subarea extraction → managed-lane coding → dynamic assignment →
+trajectory export → gateway OD → scenario testing) over shared transfer contracts → engines
+execute, pass quality gates, return versioned reviewable results.*
+
 Name note: working name **ai4ams** (echoes the lab's ai4X/x4gmns family; alternative
 considered: `agentic-ams`). Final call: Xuesong.
 
