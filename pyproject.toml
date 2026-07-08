@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai4ams"
+version = "0.1.0"
+description = "Agentic AI for Translational AMS Modeling - scheme-driven, engine-agnostic, quality-gated corridor and subarea simulation pipeline"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "ASU Trans+AI Lab"}]
+requires-python = ">=3.9"
+dependencies = ["pandas>=1.5", "numpy>=1.23", "pyyaml>=6.0"]
+
+[project.optional-dependencies]
+demand = ["openmatrix>=0.3"]
+analytics = ["pyarrow>=10"]
+
+[project.urls]
+Homepage = "https://github.com/asu-trans-ai-lab/ai4ams"
+Portal = "https://asu-trans-ai-lab.github.io/ai4ams/"
+
+[project.scripts]
+ai4ams = "subarea.process.__main__:main"
+
+[tool.setuptools]
+packages = ["subarea", "subarea.process"]

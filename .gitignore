@@ -10,3 +10,6 @@ node.csv
 link.csv
 demand*.csv
 __pycache__/
+dist/
+build/
+*.egg-info/

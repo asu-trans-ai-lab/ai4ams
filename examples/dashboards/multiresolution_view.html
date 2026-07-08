@@ -1,0 +1,82 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cross-Resolution AMS View — Regional → Corridor → Subarea</title>
+<style>
+:root{--bg:#14181d;--panel:#1d232b;--line:#2c3540;--ink:#d8dee6;--mut:#8a94a3;--acc:#4db8ff;--ok:#57d977;--warn:#ffb45f}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,Segoe UI,sans-serif}
+header{padding:14px 18px;border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:17px;color:var(--acc)}.sub{color:var(--mut);font-size:11.5px}
+#flow{display:flex;gap:4px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--line)}
+.stage{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--ok);border-radius:5px;padding:4px 9px;font-size:11px;cursor:default}
+.stage small{display:block;color:var(--mut);font-size:9.5px}
+.stage.pend{border-left-color:var(--warn)}
+main{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:12px;padding:14px 16px;max-width:1500px;margin:0 auto}
+@media(max-width:1000px){main{grid-template-columns:1fr}}
+.pane{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;min-height:430px}
+.pane h2{margin:0 0 4px;font-size:13.5px;color:var(--acc)}
+.pane .lvl{color:var(--mut);font-size:10.5px;letter-spacing:.06em}
+.kpi{display:inline-block;background:#232b35;border:1px solid var(--line);border-radius:6px;padding:3px 10px;margin:4px 4px 0 0;text-align:center}
+.kpi .v{font-weight:700;color:var(--acc);font-size:14px}.kpi .l{font-size:9px;color:var(--mut)}
+table{border-collapse:collapse;width:100%;font-size:11.5px;margin-top:8px}
+th{color:var(--mut);font-size:9.5px;text-align:left;padding:4px 6px;border-bottom:1px solid var(--line)}
+td{padding:3px 6px;border-bottom:1px solid #222a33}.num{text-align:right;font-variant-numeric:tabular-nums}
+iframe{width:100%;height:430px;border:1px solid var(--line);border-radius:8px;background:#0e1216}
+.arrow{align-self:center;text-align:center;color:var(--acc);font-size:22px}
+.note{color:var(--mut);font-size:11px;margin-top:8px}
+.bar{height:10px;border-radius:3px;background:var(--acc);display:inline-block;vertical-align:middle}
+a{color:var(--acc)}
+</style></head><body>
+<header><h1>Cross-Resolution AMS View — Regional → Corridor → Subarea</h1>
+<div class="sub">The classic MRM three-level picture, live from one scheme-driven run. Every number below comes from published artifacts (cases/i66_nvta/artifacts). Engine-agnostic: any compliant engine refills these panes.</div></header>
+
+<div id="flow">
+<span class="stage">S0 scheme<small>subarea_run.yml</small></span>
+<span class="stage">S1 prepare<small>1.6 s · 176 gates</small></span>
+<span class="stage">S1b gmns_ready<small>0 schema errors</small></span>
+<span class="stage">S2 trajectory scan<small>139 s full-res</small></span>
+<span class="stage">S3 FOCUSING tiers<small>G1 99.89%</small></span>
+<span class="stage">S4 compact<small>volume-exact</small></span>
+<span class="stage">S5 assignment<small>65 s · G6 R²=1.000</small></span>
+<span class="stage">S6 gateway OD<small>11,115 pairs</small></span>
+<span class="stage pend">S7 calibration<small>awaits congested window</small></span>
+<span class="stage">S9 CBI inputs<small>ready</small></span>
+<span class="stage">S10 dashboards<small>this page</small></span>
+</div>
+
+<main>
+<div class="pane"><div class="lvl">LEVEL 1 · MACROSCOPIC</div><h2>Regional model</h2>
+<span class="kpi"><div class="v">17,754</div><div class="l">nodes</div></span>
+<span class="kpi"><div class="v">49,329</div><div class="l">links</div></span>
+<span class="kpi"><div class="v">3,858</div><div class="l">zones</div></span>
+<span class="kpi"><div class="v">5.1M</div><div class="l">PM trips · 6 classes</div></span>
+<h2 style="margin-top:14px">FOCUSING tiers (measured significance)</h2>
+<table>
+<tr><th>tier</th><th class="num">zones</th><th>resolution kept</th></tr>
+<tr><td>🔴 inside</td><td class="num">557</td><td>full</td></tr>
+<tr><td>🟡 significant</td><td class="num">1,142</td><td>full (ext. stations protected)</td></tr>
+<tr><td>🟢 less significant</td><td class="num">1,591</td><td>130 med superzones</td></tr>
+<tr><td>⚪ not affected</td><td class="num">568</td><td>25 coarse superzones</td></tr>
+</table>
+<div class="note">OD size after compaction ≈ 13% of full — the lever that turns a regional model into a 65-second corridor scenario engine. Second instance: AZTDM statewide (61,045 nodes / 138,080 links / 6,090 zones) prepared for the I-17 flex-lane corridor in 1.36 s with the same code.</div></div>
+
+<div class="pane" style="padding:12px"><div class="lvl">LEVEL 2 · CORRIDOR</div><h2>I-66 corridor — trajectories on the map</h2>
+<iframe src="../../cases/i66_nvta/network_map.html" title="I-66 trajectory map"></iframe>
+<div class="note">Top-1,000 weighted trajectory records streamed by the kernel (DTAT contract), weight-colored; click a line for OD, gates, times. <a href="../../cases/i66_nvta/network_map.html">open full screen ↗</a></div></div>
+
+<div class="pane"><div class="lvl">LEVEL 3 · SUBAREA</div><h2>Gateway OD &amp; gates (live from artifacts)</h2>
+<span class="kpi"><div class="v">176</div><div class="l">boundary gates (88/88)</div></span>
+<span class="kpi"><div class="v" id="gpairs">…</div><div class="l">gate-to-gate OD pairs</div></span>
+<span class="kpi"><div class="v">1.014</div><div class="l">entry/exit balance</div></span>
+<table id="gtab"><tr><th>entry gate</th><th>exit gate</th><th class="num">volume (veh)</th><th></th></tr></table>
+<div class="note">Top gate-to-gate movements from <code>gateway_od.csv</code> — the subarea's boundary demand, ready for any downstream engine (micro, HCM, or a different DTA). G4 conservation and G8 compact-fidelity gates guard this table.</div></div>
+</main>
+<script>
+fetch('../../cases/i66_nvta/artifacts/gateway_od.csv').then(r=>r.text()).then(t=>{
+ const rows=t.trim().split(/\r?\n/).slice(1).map(l=>l.split(','));
+ document.getElementById('gpairs').textContent=rows.length.toLocaleString();
+ const top=rows.map(r=>({e:r[1],x:r[2],v:+r[3]})).sort((a,b)=>b.v-a.v).slice(0,10);
+ const vmax=top[0].v, tab=document.getElementById('gtab');
+ top.forEach(r=>tab.insertAdjacentHTML('beforeend',
+  `<tr><td>${r.e==0?'internal':'gate '+r.e}</td><td>${r.x==0?'internal':'gate '+r.x}</td><td class="num">${Math.round(r.v).toLocaleString()}</td><td><span class="bar" style="width:${60*r.v/vmax+4}px"></span></td></tr>`));
+}).catch(()=>{document.getElementById('gpairs').textContent='serve via http';});
+</script>
+</body></html>
