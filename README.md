@@ -17,7 +17,7 @@ trajectory export → gateway OD → scenario testing) over shared transfer cont
 execute, pass quality gates, return versioned reviewable results.*
 
 Name note: working name **ai4ams** (echoes the lab's ai4X/x4gmns family; alternative
-considered: `agentic-ams`). Final call: Xuesong.
+considered: `agentic-ams`). Final call: the lab PI.
 
 ## What this is (and is not)
 
@@ -51,6 +51,14 @@ python -m subarea.process prepare my_corridor.yml     # focus links, gates, supe
 # kernel fast-response run with trajectory_output=1 (see docs/KERNEL_SUBAREA_EXPORT_DESIGN.md)
 # then: classify -> compact -> converters -> gateway OD + quality_gates.json
 ```
+
+## Disclaimer
+
+**AI4AMS is an education and research product.** It references and acknowledges several FHWA
+reports and public agency processes (FHWA-HRT-13-036 / 21-082 / 22-055, VTRC 22-R5, public
+workshop material) but is **not produced, sponsored, or endorsed by FHWA, USDOT, or any
+transportation agency**, and is not a standard, specification, or regulation. Attributions in
+the expert register are by agency/role, never by individual. Full text: [DISCLAIMER.md](DISCLAIMER.md).
 
 ## Data policy
 

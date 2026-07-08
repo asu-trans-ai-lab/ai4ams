@@ -1,10 +1,10 @@
 # Lessons adopted from the four reference documents
 
 PDFs archived in this folder: `FHWA-HRT-13-036_AMS_Data_Hub.pdf` · `NVTA_Workshop_03102023.pdf` ·
-`FHWA-21-082.pdf` (MRM State-of-Practice & Gap Analysis, Zhou/Hadi/Hale 2021, "SOPAGA") ·
-`dot_60726_DS1.pdf` (= FHWA-HRT-22-055, MRM Guidebook, Hadi/Zhou/Hale 2022).
+`FHWA-21-082.pdf` (MRM State-of-Practice & Gap Analysis, the FHWA-HRT-21-082 authors 2021, "SOPAGA") ·
+`dot_60726_DS1.pdf` (= FHWA-HRT-22-055, MRM Guidebook, the FHWA-HRT-22-055 authors 2022).
 
-## A. FHWA-HRT-13-036 — AMS Data Hub (2013; Zhou coauthor)
+## A. FHWA-HRT-13-036 — AMS Data Hub (2013; the lab PI coauthor)
 
 The report's 8-step Tucson/Portland workflow is the direct ancestor of this case:
 regional TDM export → import → demand → **DTALite equilibrium** → **cut a subarea** →
@@ -112,7 +112,7 @@ per-period fields is exactly an edge model; treat that as a feature, not an acci
 6. Case-study gap numbering (Gap 2.1–2.4, 3.1, 3.2, 3.6) is the shared vocabulary between SOPAGA
    and the Guidebook — reuse it when writing the I-66 memo so FHWA readers recognize the lineage.
 
-## F. Zhou/Erdoğan/Mahmassani TRB'06 — subarea dynamic OD (PDF in this folder)
+## F. the 2006 TRB subarea-OD study authors TRB'06 — subarea dynamic OD (PDF in this folder)
 
 The two-stage subarea demand estimation this whole pipeline descends from:
 **Stage 1** — induced OD from path-based assignment results of the complete network (an

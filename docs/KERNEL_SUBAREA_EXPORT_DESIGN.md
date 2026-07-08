@@ -1,6 +1,6 @@
 # FR-19 — Kernel Subarea Trajectory/Event Export: Design v2
 
-**Date:** 2026-07-07 · v2 after downstream review (Xuesong) — supersedes v1 "route export".
+**Date:** 2026-07-07 · v2 after downstream review (the lab PI) — supersedes v1 "route export".
 Status: **design agreed in structure; Q1–Q9 resolved below; implementation order §10.**
 
 > **Design correction after downstream review:**

@@ -1,0 +1,361 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>I-66 NVTA Managed-Lane Case — 10-Step Process Dashboard</title>
+<style>
+:root{--bg:#14181d;--panel:#1d232b;--panel2:#232b35;--line:#2c3540;--ink:#d8dee6;--mut:#8a94a3;
+--acc:#4db8ff;--ok:#57d977;--warn:#ffb45f;--bad:#ff5f5f;--build:#b48cff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,Segoe UI,sans-serif}
+#bar{position:sticky;top:0;z-index:9;display:flex;gap:14px;align-items:center;padding:10px 16px;
+ background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+#bar b{color:var(--acc);font-size:16px}
+#bar .sub{color:var(--mut);font-size:11.5px}
+.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 12px;text-align:center}
+.kpi .v{font-size:17px;font-weight:700;color:var(--acc)}.kpi .l{font-size:10px;color:var(--mut)}
+main{max-width:1200px;margin:0 auto;padding:18px 16px 60px}
+h2{font-size:14px;color:var(--acc);border-bottom:1px solid var(--line);padding-bottom:6px;margin:34px 0 12px}
+h2 .n{color:var(--mut);font-weight:400;font-size:12px}
+/* pipeline strip */
+#strip{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin:14px 0 4px}
+.snode{flex:1 1 100px;min-width:100px;background:var(--panel2);border:1px solid var(--line);
+ border-left-width:4px;border-radius:6px;padding:7px 9px;margin:3px;cursor:pointer;transition:background .15s}
+.snode:hover{background:#2a3441}
+.snode .t{font-weight:700;font-size:12px}.snode .s{font-size:10px;color:var(--mut)}
+.snode .st{font-size:10.5px;font-weight:700;margin-top:3px}
+.ok{border-left-color:var(--ok)}.ok .st{color:var(--ok)}
+.pa{border-left-color:var(--warn)}.pa .st{color:var(--warn)}
+.ga{border-left-color:var(--bad)}.ga .st{color:var(--bad)}
+/* badges */
+.badge{display:inline-block;font-size:10.5px;font-weight:700;border-radius:4px;padding:1px 8px;border:1px solid}
+.b-ok{color:var(--ok);border-color:var(--ok)}.b-pa{color:var(--warn);border-color:var(--warn)}
+.b-ga{color:var(--bad);border-color:var(--bad)}.b-fr{color:var(--build);border-color:var(--build)}
+.b-d{color:var(--acc);border-color:var(--acc)}.b-mut{color:var(--mut);border-color:var(--line)}
+/* step cards */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:10px 0}
+.card h3{margin:0 0 4px;font-size:13.5px}
+.card h3 .num{color:var(--mut);font-weight:400}
+.card .why{color:var(--mut);font-size:12px;margin:2px 0 8px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:860px){.row3{grid-template-columns:1fr}}
+.mini{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+.mini .h{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--mut);margin-bottom:5px}
+.mini ul{margin:0;padding-left:16px}.mini li{margin:2px 0;font-size:12px}
+code,.path{font:11px Consolas,monospace;color:#9fd0a8;background:#161b21;border-radius:3px;padding:0 4px;word-break:break-all}
+.path{color:#8fb8dd}
+/* tables */
+table{border-collapse:collapse;width:100%;font-size:12px}
+th{color:var(--mut);font-size:10.5px;letter-spacing:.05em;text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:5px 8px;border-bottom:1px solid #222a33;vertical-align:top}
+tr:hover td{background:#1c232c}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+/* gantt */
+.gwrap{overflow-x:auto}.gantt{min-width:640px}
+.grow{display:grid;grid-template-columns:210px repeat(6,1fr);gap:2px;align-items:center;margin:2px 0}
+.glab{font-size:11.5px;color:var(--ink)}
+.gcell{height:20px;border-radius:4px;background:#1a2028}
+.gbar{height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;
+ font-size:10px;font-weight:700;color:#14181d}
+.ghead{font-size:10px;color:var(--mut);text-align:center}
+details{margin:6px 0}summary{cursor:pointer;color:var(--acc);font-size:12px}
+.note{background:#1d2229;border-left:3px solid var(--warn);border-radius:0 6px 6px 0;padding:8px 12px;margin:10px 0;font-size:12px}
+.note b{color:var(--warn)}
+.gui{background:#182028;border-left:3px solid var(--ok)}
+.gui b{color:var(--ok)}
+a{color:var(--acc)}
+#legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--mut);margin:6px 0 0}
+footer{color:var(--mut);font-size:11px;margin-top:40px;border-top:1px solid var(--line);padding-top:10px}
+</style></head><body>
+
+<div id="bar"><b>I-66 Managed-Lane Case</b><span class="sub">NVTA · 10-step process dashboard · workspace: I-66_ams\ (one folder per step, FHWA AMS-hub style) · plan: 00_project\I66_NVTA_PLAN.md</span>
+ <span style="display:flex;gap:8px;flex-wrap:wrap">
+ <span class="kpi"><div class="v">2✓ 6◐ 2○</div><div class="l">step readiness</div></span>
+ <span class="kpi"><div class="v">19</div><div class="l">feature requests</div></span>
+ <span class="kpi"><div class="v">15</div><div class="l">decisions (5 blocking)</div></span>
+ <span class="kpi"><div class="v">49,329</div><div class="l">NVTA links</div></span>
+ <span class="kpi"><div class="v">342</div><div class="l">I-66 links</div></span>
+ <span class="kpi"><div class="v">148</div><div class="l">I-66 TMCs (5-min)</div></span>
+ </span></div>
+
+<main>
+
+<h2>Pipeline at a glance <span class="n">— click a step to jump; color = readiness of data + tools for that step</span></h2>
+<div id="strip">
+ <div class="snode pa" onclick="go(1)"><div class="t">1 Scope</div><div class="s">boundary</div><div class="st">◐ PARTIAL</div></div>
+ <div class="snode pa" onclick="go(2)"><div class="t">2 Extract</div><div class="s">subarea→GMNS</div><div class="st">◐ PARTIAL</div></div>
+ <div class="snode ga" onclick="go(3)"><div class="t">3 Lanes</div><div class="s">GP/HOV/Express</div><div class="st">○ GAP</div></div>
+ <div class="snode pa" onclick="go(4)"><div class="t">4 TMC</div><div class="s">speed align</div><div class="st">◐ 80% DONE</div></div>
+ <div class="snode pa" onclick="go(5)"><div class="t">5 OD</div><div class="s">demand prep</div><div class="st">◐ PM READY</div></div>
+ <div class="snode ok" onclick="go(6)"><div class="t">6 Static</div><div class="s">baseline UE</div><div class="st">✓ READY</div></div>
+ <div class="snode ga" onclick="go(7)"><div class="t">7 Dynamic</div><div class="s">time-sliced</div><div class="st">○ BUILD</div></div>
+ <div class="snode pa" onclick="go(8)"><div class="t">8 Calibrate</div><div class="s">OD + routes</div><div class="st">◐ PARTIAL</div></div>
+ <div class="snode pa" onclick="go(9)"><div class="t">9 CBI</div><div class="s">bottleneck eval</div><div class="st">◐ PARTIAL</div></div>
+ <div class="snode ok" onclick="go(10)"><div class="t">10 Visualize</div><div class="s">GUI4GMNS</div><div class="st">✓ TOOL READY</div></div>
+</div>
+<div id="legend">
+ <span><span class="badge b-ok">✓ READY</span> data + tool in hand, no decision blocking</span>
+ <span><span class="badge b-pa">◐ PARTIAL</span> core exists, enhancement or decision pending</span>
+ <span><span class="badge b-ga">○ GAP</span> must be built (feature request) or acquired (data)</span>
+ <span><span class="badge b-fr">FR-n</span> subarea2gmns code enhancement</span>
+ <span><span class="badge b-d">D-n</span> decision / discussion needed</span>
+</div>
+
+<div class="note gui"><b>✓ Grounded in two reference documents</b> — <b>FHWA-HRT-13-036</b> (AMS Data Hub, 2013, the lab PI coauthor:
+its 8-step regional-TDM→DTALite→subarea→ODME workflow is this pipeline's ancestor; we adopt its source-data tables,
+per-step objectives, before/after ODME evidence, and the with/without time-saving ledger — 2013 result: 35–52 h → 7–11 h, 80% saving)
+and the <b>NVTA TransAction Workshop 2023</b> (we adopt: <b>FOCUSING</b> subarea approach — external trips consolidated,
+subarea↔outer trips kept intact; corridor convention <code>I66_Outside_E/W</code> / <code>I66_Inside_E/W</code>; QVDF 6-step calibration;
+VDT/VCDT measures; and CBI congestion duration = adopted TransAction measure <b>B1 "Duration of Severe Congestion"</b>).
+Extracted lessons: <span class="path">I-66_ams\90_reference\AMS_LESSONS.md</span></div>
+
+<div class="note gui"><b>✓ Quality gates — LIVE (first measured values, 2026-07-07; feed: 02_extract\i66_pm_fast_response_v01\quality_gates.json)</b><br>
+<span class="badge b-ok">G1 PASS</span> crossing-volume coverage by retained zone tiers = <b>99.89%</b> (target ≥99%) ·
+<span class="badge b-ok">G2</span> effective zones <b>1,380 / 3,858</b> (OD size 12.8%, FOCUSING tiers) ·
+<span class="badge b-ok">G3</span> tier counts <b>557 inside / 663 significant / 1,644 less-significant / 994 not-affected</b> — independently reproduces the NVTA-2023 classification (671 significant on their subarea) ·
+<span class="badge b-ok">G4</span> gate flow balance entry/exit = <b>1.014</b> (203,252 vs 200,426 weighted trips; 10,020 internal-ended) ·
+<span class="badge b-pa">G5</span> crossing demand 8.85M OD pairs / 206,849 weighted PM trips ·
+<span class="badge b-ok">G6 PASS</span> DTAT link volumes vs kernel link_performance on 295 loaded focus links: <b>R² = 1.000, ratio = 1.000, MAPE = 0.0</b> — theta accounting exact.
+Method: FOCUSING Stage-FO significance from measured DTAT crossing weights (DTALite-NVTA manuscript §4.1; classify is idempotent — inside zones from the stable subarea definition).
+<b>Compact fast-response measured + tuned:</b> <span class="badge b-ok">G8 PASS</span> gateway-OD agreement compact-vs-full-res at cover_sig=0.90: <b>R² 0.966, MAPE 5.8%, totals 1.0007</b> (0.80 setting: R² 0.87 FAIL — coverage knob is the control); adopted config = 1,834 effective zones, demand 29.86M → 10.7M rows, <b>65 s wall</b> (vs 139 s full-res), DTAT → Parquet 72 MB + GeoJSON sample. TRB'06 two-stage lineage: Stage-1 induced OD = DTAT (G6 exact); Stage-2 = ODME vs measurements (G7, RMSE-with/without convention).</div>
+
+<div class="note"><b>⚠ Two data blockers found by the inventory</b> — (1) Oct-2025 I-66 is essentially
+<b>uncongested</b> (0 congested episodes; QVDF fell back to priors) → calibration window decision
+<span class="badge b-d">D-6</span>; (2) <b>no I-66 express-lane TMCs</b> and no INRIX volume in the RITIS
+extract → data request <span class="badge b-d">D-7</span>. Neither blocks Phase 1 (extraction + static baseline).</div>
+
+<h2>Step details <span class="n">— have / build / decide for each step</span></h2>
+
+<div class="card" id="s1"><h3><span class="num">Step 1</span> Define I-66 subarea scope <span class="badge b-pa">◐ PARTIAL</span></h3>
+<div class="why">Corridor boundary around I-66 mainline + express/HOV + ramps + parallel arterials + gateway connectors.</div>
+<div class="row3">
+<div class="mini"><div class="h">HAVE ✓</div><ul>
+<li>I-66 spine identifiable: 342 links, <code>STREETNAME=='I-66'</code> in regional link.csv</li>
+<li>TMC extents Prince William → Rosslyn (map-matched)</li>
+<li>bbox+buffer clip works today (AZTDM-proven)</li></ul></div>
+<div class="mini"><div class="h">BUILD ○</div><ul>
+<li><span class="badge b-fr">FR-1</span> corridor-following polygon boundary (today: bbox only — stub is <code>NotImplementedError</code>)</li>
+<li><span class="badge b-fr">FR-2</span> scheme-YAML driver (kills hard-coded paths)</li></ul></div>
+<div class="mini"><div class="h">DECIDE ?</div><ul>
+<li><span class="badge b-d">D-1</span> extent: outside-Beltway first (recommended) vs to-DC vs full</li>
+<li><span class="badge b-d">D-2</span> include US-29 / US-50 diversion routes (recommended yes)</li></ul></div>
+</div></div>
+
+<div class="card" id="s2"><h3><span class="num">Step 2</span> Extract subarea → GMNS <span class="badge b-pa">◐ PARTIAL</span></h3>
+<div class="why">Clip network, create gateways, run accessibility QA, export runnable node/link/zone/demand/settings.</div>
+<div class="row3">
+<div class="mini"><div class="h">HAVE ✓</div><ul>
+<li>Module D chain working: clip → gateways → <b>directional</b> accessibility QA → TAPLite export → assignment → ODME</li>
+<li>Quality gates + POOR/REVIEW/GOOD verdict (<code>subarea_quality.py</code>)</li>
+<li>NVTA regional net verified: 17,754 n / 49,329 l / 3,858 z, EPSG:2248</li></ul></div>
+<div class="mini"><div class="h">BUILD ○</div><ul>
+<li><span class="badge b-fr">FR-3</span> network schema profiles — NVTA 135-col Cube schema plugs in like AZTDM</li>
+<li><span class="badge b-fr">FR-4</span> centroid-connector preservation / synthesis (today: none)</li></ul></div>
+<div class="mini"><div class="h">DECIDE ?</div><ul>
+<li><span class="badge b-d">D-3</span> boundary-zone handling: keep NVTA TAZs (recommended) vs re-zone</li></ul></div>
+</div></div>
+
+<div class="card" id="s3"><h3><span class="num">Step 3</span> GP / HOV / Express lane representation <span class="badge b-ga">○ GAP</span></h3>
+<div class="why">The step that makes this more than a network conversion — managed-lane coding good enough for route choice + pricing.</div>
+<div class="row3">
+<div class="mini"><div class="h">HAVE ✓</div><ul>
+<li>Kernel fully supports the target: <code>allowed_use</code> per link (zero-leak on 2,895 restricted links) + per-class <code>toll_&lt;mode&gt;</code></li>
+<li>NVTA coding found: 51 truck-ban links, <b>45 express reversibles coded <code>closed</code></b>, tolls uniform (no HOV exemption)</li>
+<li><code>subarea_qa</code> HOV balance-domain method regression-tested (I-10)</li></ul></div>
+<div class="mini"><div class="h">BUILD ○</div><ul>
+<li><span class="badge b-fr">FR-5</span> managed-lane-aware clip: <code>lane_group</code>, <code>parallel_gp_link_id</code>, per-group gateways</li>
+<li><span class="badge b-fr">FR-6</span> managed-lane QA gates (express connectivity, no illegal GP↔express crossing, HOV closure)</li>
+<li>Scenario E1 overlay: reopen reversibles, <code>toll_hov3=0</code> (agency master untouched)</li></ul></div>
+<div class="mini"><div class="h">DECIDE ?</div><ul>
+<li><span class="badge b-d">D-4</span> baseline = agency coding, E1 = HOV-exempt recode? (recommended)</li>
+<li><span class="badge b-d">D-5</span> fixed per-period toll v1 vs dynamic-toll proxy loop v1.1</li></ul></div>
+</div></div>
+
+<div class="card" id="s4"><h3><span class="num">Step 4</span> TMC → GMNS speed alignment <span class="badge b-pa">◐ ~80% DONE</span></h3>
+<div class="why">Connect observed I-66 congestion to the simulation network. Scheme-driven so it reruns on any corridor.</div>
+<div class="row3">
+<div class="mini"><div class="h">HAVE ✓</div><ul>
+<li>I-66 EB/WB 5-min INRIX speeds, 74+74 TMCs (Oct 2025)</li>
+<li><b>Crosswalk already built</b>: <code>full_tmc_to_link.csv</code> — EB 78.4% / WB 79.7% matched, ~73 ft offset</li>
+<li>QVDF turnkey outputs for I-66 EB/WB (prior-driven — see D-6)</li>
+<li>Scheme files created: <code>schemes/tmc_matching_template.yml</code> + i66 + i395hov instances</li></ul></div>
+<div class="mini"><div class="h">BUILD ○</div><ul>
+<li><span class="badge b-fr">FR-7</span> link speed-profile emitter (<code>link_speed_profile.csv</code> through the crosswalk)</li>
+<li><span class="badge b-fr">FR-8</span> match-gap repair (~20% residual TMCs; sequence interpolation; residuals always reported)</li></ul></div>
+<div class="mini"><div class="h">DECIDE ?</div><ul>
+<li><span class="badge b-d">D-6</span> ⚠ observation window (Oct-2025 uncongested)</li>
+<li><span class="badge b-d">D-7</span> ⚠ request I-66 Express TMCs + VDOT toll/volume feeds</li></ul></div>
+</div></div>
+
+<div class="card" id="s5"><h3><span class="num">Step 5</span> OD demand preparation <span class="badge b-pa">◐ PM READY</span></h3>
+<div class="why">Static + time-dependent + class-separated demand for the subarea, seeded from the regional model.</div>
+<div class="row3">
+<div class="mini"><div class="h">HAVE ✓</div><ul>
+<li>6-class PM demand (sov/hov2/hov3/com/trk/apv), CSV + binary, 29.9 M OD rows</li>
+<li>Converged 20-iter regional runs to source paths from</li>
+<li>Two OD producers exist: Module D Stage-1 induced OD + <code>subarea_qa</code> gateway-OD</li>
+<li>AM/MD/NT trip tables exist upstream (Cube OMX, unconverted)</li></ul></div>
+<div class="mini"><div class="h">BUILD ○</div><ul>
+<li><span class="badge b-fr">FR-9</span> route-columns OD producer (clip paths from converged run — exact, natively 6-class)</li>
+<li><span class="badge b-fr">FR-10</span> cross-validate vs subarea_qa gateway-OD</li></ul></div>
+<div class="mini"><div class="h">DECIDE ?</div><ul>
+<li><span class="badge b-d">D-8</span> convert AM OMX (I-66 peak is AM-EB) — ~1 day</li>
+<li><span class="badge b-d">D-9</span> keep 6 NVTA classes (recommended); express eligibility = link restriction + toll, not a demand class</li></ul></div>
+</div></div>
+
+<div class="card" id="s6"><h3><span class="num">Step 6</span> Static assignment baseline <span class="badge b-ok">✓ READY</span></h3>
+<div class="why">Connectivity, loading, volume reasonableness, initial path sets — the sanity gate before anything dynamic.</div>
+<div class="row3">
+<div class="mini"><div class="h">HAVE ✓</div><ul>
+<li>TAPLite kernel: multi-class UE, 9 VDFs, conic matches CUBE R²=0.994 regionally</li>
+<li><code>taplite run</code> with intake gate + manifest + HTML report</li>
+<li>bi-conjugate FW, relative-gap standards</li></ul></div>
+<div class="mini"><div class="h">BUILD ○</div><ul><li>Nothing new — Module D <code>taplite_export</code> already emits settings/mode_type</li></ul></div>
+<div class="mini"><div class="h">DECIDE ?</div><ul>
+<li><span class="badge b-d">D-10</span> acceptance thresholds (gateway conservation ±%, interior-link R² vs regional run)</li></ul></div>
+</div></div>
+
+<div class="card" id="s7"><h3><span class="num">Step 7</span> Dynamic assignment <span class="badge b-ga">○ BUILD (quasi-dynamic)</span></h3>
+<div class="why">Time-dependent speeds, bottleneck activation, queue buildup. Kernel is static TAP — honesty required in labeling.</div>
+<div class="row3">
+<div class="mini"><div class="h">HAVE ✓</div><ul>
+<li>QVDF (vdf_type=2): per-link 5-min speed/queue profiles (t0/t2/t3, P, vt2, Severe_Congestion_P)</li>
+<li>Warm-start ladder L1/L2/L3 + FREEZE/REPLAY for cheap scenario re-runs</li>
+<li><code>multiperiod.py</code>; DTALite-main simulation tree (separate, for the stretch goal)</li></ul></div>
+<div class="mini"><div class="h">BUILD ○</div><ul>
+<li><span class="badge b-fr">FR-11</span> time-sliced driver: 30–60-min slices, departure profile, warm-start chain → stitched <code>link_performance_dynamic.csv</code></li></ul></div>
+<div class="mini"><div class="h">DECIDE ?</div><ul>
+<li><span class="badge b-d">D-11</span> positioning: quasi-dynamic now, DTALite-main simulation as stretch — state this explicitly to a partner agency contact</li></ul></div>
+</div></div>
+
+<div class="card" id="s8"><h3><span class="num">Step 8</span> Dynamic OD &amp; route-choice calibration <span class="badge b-pa">◐ PARTIAL</span></h3>
+<div class="why">The central analytical layer: match simulated speeds/volumes/durations to observed.</div>
+<div class="row3">
+<div class="mini"><div class="h">HAVE ✓</div><ul>
+<li><code>dynamic_ODME</code> package — T&gt;1 by time-grid design; count + speed + duration + prior losses; NVTA cases exist</li>
+<li>Graph ODME in subarea2gmns (lesson: global scaling over-loads parallel arterials)</li></ul></div>
+<div class="mini"><div class="h">BUILD ○</div><ul>
+<li><span class="badge b-fr">FR-12</span> calibration scorecard emitter (obs-vs-sim speed / TT / bottleneck P / ML utilization), one command per iteration</li></ul></div>
+<div class="mini"><div class="h">DECIDE ?</div><ul>
+<li><span class="badge b-d">D-12</span> targets: speed MAE ≤5 mph? corridor TT ±10%? P ±30 min?</li>
+<li><span class="badge b-d">D-13</span> volume truth: VDOT p4p counts vs S3-synthesis (recommend VDOT where available, flagged)</li></ul></div>
+</div></div>
+
+<div class="card" id="s9"><h3><span class="num">Step 9</span> CBI bottleneck evaluation <span class="badge b-pa">◐ PARTIAL</span></h3>
+<div class="why">Observed-vs-simulated congestion on identical definitions; GP vs express reported separately.</div>
+<div class="row3">
+<div class="mini"><div class="h">HAVE ✓</div><ul>
+<li>CBI engine (tmc2gmns C++ + Python port): episodes (T0/T2/T3/P), delay-based CBI score, bottleneck ranking</li>
+<li>NVTA closeout methodology delivered (I-395 NB/SB, I-95 NB, US-29) — <b>I-66 not yet in the set</b></li></ul></div>
+<div class="mini"><div class="h">BUILD ○</div><ul>
+<li><span class="badge b-fr">FR-13</span> simulated-CBI adapter: feed per-slice simulated speeds through the same episode code</li></ul></div>
+<div class="mini"><div class="h">DECIDE ?</div><ul>
+<li><span class="badge b-d">D-14</span> add I-66 to the CBI corridor set formally (check closeout contract scope)</li></ul></div>
+</div></div>
+
+<div class="card" id="s10"><h3><span class="num">Step 10</span> GUI4GMNS visualization <span class="badge b-ok">✓ TOOL READY</span></h3>
+<div class="why">Practitioner-facing layer: one GMNS run folder in → one self-contained offline dashboard.html out.</div>
+<div class="row3">
+<div class="mini"><div class="h">HAVE ✓</div><ul>
+<li><code>pip install gui4gmns</code> → <code>python -m gui4gmns &lt;gmns_folder&gt;</code> (README-verified)</li>
+<li>Renders: MOE map (volume/V/C/queue/<b>QVDF speed</b>), 15-min animation, OD desire lines, <b>corridor speed contour INRIX-observed vs QVDF-model with RMSE/R²/bias</b> — exactly steps 4/7/8 outputs</li>
+<li>NVTA dashboard template already exists (<code>templates/dashboard_nvta.html</code>) + i17 example</li>
+<li>Portals export: Kepler.gl / deck.gl / QGIS / KML in one command</li></ul></div>
+<div class="mini"><div class="h">BUILD ○</div><ul>
+<li><span class="badge b-fr">FR-14</span> export pack: <code>lane_group</code> coloring attribute, TMC overlay layer, scenario A/B diff</li></ul></div>
+<div class="mini"><div class="h">DECIDE ?</div><ul>
+<li><span class="badge b-d">D-15</span> confirm GUI4GMNS input contract for scenario comparison + lane-group coloring (cross-team)</li></ul></div>
+</div></div>
+
+<div class="note gui"><b>✓ GUI4GMNS verified (cloned from GitHub 2026-07-07 + local dev copy found)</b> —
+canonical home is <span class="path">dynamic_ODME\gui4gmns\github_dev</span> (same as
+<a href="https://github.com/asu-trans-ai-lab/gui4gmns">github.com/asu-trans-ai-lab/gui4gmns</a>).
+Its own pipeline is <b>osm2gmns → demand → assignment → integrate → visualize</b>; one shared data contract
+(<code>SHARED_CONTRACT.md</code>: node/link/link_performance/link_performance_15min/route_assignment/agent_trajectory)
+means our Step 2–8 outputs are already in the format it reads. Data policy: NVTA/INRIX/CBI data is git-ignored
+(<code>validate_no_private_data.py</code>) — the I-66 dashboard stays local/private like <code>dashboard_nvta.html</code>.</div>
+
+<h2>Data inventory <span class="n">— everything the 10 steps consume, with location and state</span></h2>
+<table>
+<tr><th>dataset / tool</th><th>location</th><th class="num">size</th><th>feeds step</th><th>state</th></tr>
+<tr><td>NVTA regional GMNS network (Base 2025 PM)</td><td class="path">CBI_NVTA\regional_pm\regional_pm\pm\_internal</td><td class="num">40 MB link.csv</td><td>1–6</td><td><span class="badge b-ok">✓ READY</span> 17,754 n / 49,329 l / 3,858 z</td></tr>
+<tr><td>6-mode PM demand (CSV + binary)</td><td class="path">…\_internal\{sov,hov2,hov3,com,trk,apv}_pm.{csv,bin}</td><td class="num">0.3–166 MB ea</td><td>5</td><td><span class="badge b-ok">✓ READY</span> 29.9 M OD rows</td></tr>
+<tr><td>AM / MD / NT trip tables</td><td class="path">…\regional_pm\i4_{AM,MD,NT}_Trips.omx</td><td class="num">42–53 MB ea</td><td>5, 7</td><td><span class="badge b-pa">◐ UNCONVERTED</span> D-8</td></tr>
+<tr><td>Converged regional runs (conic + QVDF, 20 it)</td><td class="path">nvta_run\results\link_perf_*_final_iter20.csv</td><td class="num">45 MB ea</td><td>5, 6</td><td><span class="badge b-ok">✓ READY</span></td></tr>
+<tr><td>I-66 GP speed, 5-min INRIX (Oct 2025)</td><td class="path">CBI_NVTA\nvta_freeway_input\I-66_{EB,WB}</td><td class="num">18 MB ea</td><td>4, 8, 9</td><td><span class="badge b-pa">◐ UNCONGESTED WINDOW</span> D-6</td></tr>
+<tr><td>TMC → model-link crosswalk</td><td class="path">CBI_NVTA\1_map_matching2026\…\results\full_tmc_to_link.csv</td><td class="num">—</td><td>4</td><td><span class="badge b-ok">✓ READY</span> EB 78.4% / WB 79.7%</td></tr>
+<tr><td>I-66 QVDF calibration outputs</td><td class="path">CBI_NVTA\QVDF_turnkey\outputs\NVTA_I66_{EB,WB}</td><td class="num">—</td><td>8, 9</td><td><span class="badge b-pa">◐ PRIOR-DRIVEN</span> no congestion to fit</td></tr>
+<tr><td>I-66 <b>Express-lane</b> TMCs / toll / volume</td><td class="path">— not in RITIS extract —</td><td class="num">—</td><td>3, 8, 9</td><td><span class="badge b-ga">○ MISSING</span> D-7 data request</td></tr>
+<tr><td>VDOT volume references</td><td class="path">CBI_NVTA\1_map_matching2026\data\processed\vdot_volume_matching</td><td class="num">—</td><td>8</td><td><span class="badge b-pa">◐ PARTIAL COVERAGE</span> D-13</td></tr>
+<tr><td>I-395 HOV / I-95 HOV TMC speed (fallback congested corridors)</td><td class="path">CBI_NVTA\nvta_freeway_input\I-{395,95}HOV_{NB,SB}</td><td class="num">~8–9 MB ea</td><td>alt 4–9</td><td><span class="badge b-ok">✓ READY</span></td></tr>
+<tr><td>subarea2gmns (Modules A–E, Module D flagship)</td><td class="path">corridor2gmns_dev\subarea2gmns[_release]</td><td class="num">—</td><td>1, 2, 5</td><td><span class="badge b-pa">◐ 4 GAPS → FR-1..10</span></td></tr>
+<tr><td>subarea_qa (HOV-aware gateway-OD)</td><td class="path">dtalite_with_taplite_Cpp_kernel\subarea_qa</td><td class="num">—</td><td>3, 5</td><td><span class="badge b-pa">◐ EXTRACTION STUBBED</span></td></tr>
+<tr><td>TAPLite kernel (multi-class, per-class toll, QVDF, warm-start)</td><td class="path">kernel\src\TAPLite.cpp · taplite4mpo v0.3.0</td><td class="num">8,744 loc</td><td>6, 7</td><td><span class="badge b-ok">✓ READY</span> static TAP only</td></tr>
+<tr><td>dynamic_ODME (T&gt;1 by time-grid)</td><td class="path">dynamic_ODME\odme (cases 04_nvta_sb_pm, 05_nvta_nb_am)</td><td class="num">—</td><td>8</td><td><span class="badge b-ok">✓ READY</span></td></tr>
+<tr><td>CBI engine (tmc2gmns) + NVTA closeout methodology</td><td class="path">CBI_NVTA\CBI-main (1) · NVTA_CBI_Closeout_Package</td><td class="num">—</td><td>9</td><td><span class="badge b-pa">◐ I-66 NOT IN SET</span> D-14</td></tr>
+<tr><td>GUI4GMNS (generator + viewers + portals)</td><td class="path">dynamic_ODME\gui4gmns\github_dev · pip gui4gmns</td><td class="num">—</td><td>10</td><td><span class="badge b-ok">✓ READY</span></td></tr>
+<tr><td>TMC-matching scheme files (reusable per corridor)</td><td class="path">I-66_ams\04_tmc_alignment\tmc_matching_*.yml (+ generic template in subarea2gmns\schemes\)</td><td class="num">3 files</td><td>4</td><td><span class="badge b-ok">✓ CREATED</span> runner = FR-7/8</td></tr>
+<tr><td>I-66_ams step workspace (per-step READMEs, source-data table, AMS lessons, time ledger)</td><td class="path">corridor2gmns_dev\subarea2gmns\I-66_ams\</td><td class="num">12 folders</td><td>all</td><td><span class="badge b-ok">✓ CREATED</span></td></tr>
+</table>
+
+<h2>Feature-request register <span class="n">— subarea2gmns enhancements, build order</span></h2>
+<table>
+<tr><th>FR</th><th>title</th><th>size</th><th>phase</th><th>step</th></tr>
+<tr><td><span class="badge b-fr">FR-2</span></td><td>Scheme-file driver (replaces env / hard-coded paths)</td><td>S</td><td>P1</td><td>1</td></tr>
+<tr><td><span class="badge b-fr">FR-3</span></td><td>Network schema profiles (nvta.json; ports subarea_qa Profile)</td><td>M</td><td>P1</td><td>2</td></tr>
+<tr><td><span class="badge b-fr">FR-9</span></td><td>Route-columns subarea OD producer</td><td>M</td><td>P1</td><td>5</td></tr>
+<tr><td><span class="badge b-fr">FR-1</span></td><td>Corridor-following polygon boundary (implements stub)</td><td>M</td><td>P2</td><td>1</td></tr>
+<tr><td><span class="badge b-fr">FR-4</span></td><td>Centroid-connector preservation / synthesis</td><td>M</td><td>P2</td><td>2</td></tr>
+<tr><td><span class="badge b-fr">FR-5</span></td><td>Managed-lane-aware clip (lane_group, parallel_gp_link_id, per-group gateways)</td><td><b>L</b></td><td>P2</td><td>3</td></tr>
+<tr><td><span class="badge b-fr">FR-6</span></td><td>Managed-lane QA gates</td><td>S</td><td>P2</td><td>3</td></tr>
+<tr><td><span class="badge b-fr">FR-7</span></td><td>Link speed-profile emitter (scheme-driven <code>tmc-match</code> runner)</td><td>M</td><td>P3</td><td>4</td></tr>
+<tr><td><span class="badge b-fr">FR-8</span></td><td>TMC match-gap repair + residual report</td><td>S</td><td>P3</td><td>4</td></tr>
+<tr><td><span class="badge b-fr">FR-10</span></td><td>OD cross-validation vs subarea_qa gateway-OD</td><td>S</td><td>P3</td><td>5</td></tr>
+<tr><td><span class="badge b-fr">FR-11</span></td><td>Time-sliced quasi-dynamic driver (warm-start chain)</td><td>M</td><td>P4</td><td>7</td></tr>
+<tr><td><span class="badge b-fr">FR-12</span></td><td>Calibration scorecard emitter</td><td>S</td><td>P4</td><td>8</td></tr>
+<tr><td><span class="badge b-fr">FR-13</span></td><td>Simulated-CBI adapter</td><td>S</td><td>P5</td><td>9</td></tr>
+<tr><td><span class="badge b-fr">FR-14</span></td><td>GUI4GMNS export pack (lane_group colors, TMC overlay, scenario diff)</td><td>M</td><td>P5</td><td>10</td></tr>
+<tr><td><span class="badge b-fr">FR-15</span></td><td>Parametric LOE estimator in intake gate (SOPAGA G1 / WisDOT ask: zones, lane-miles, periods, scenarios → effort estimate)</td><td>S</td><td>P5</td><td>all</td></tr>
+<tr><td><span class="badge b-fr">FR-16</span></td><td>Observed-CBI target extractor — <b>CBI before calibration</b>: bottleneck head, t0/t2/t3/P/vt2 → <code>cbi_targets.csv</code> → ODME losses (memo Gap-2)</td><td>M</td><td>P3</td><td>4, 8</td></tr>
+<tr><td><span class="badge b-fr">FR-17</span></td><td>Class-split calibration — Express_Toll_Eligible split of SOV by OD pair/time/entry-exit/VOT (memo Gap-3)</td><td>M</td><td>P4</td><td>5, 8</td></tr>
+<tr><td><span class="badge b-fr">FR-18</span></td><td>Superzone-accelerated FOCUSING — full-res zones inside corridor, <code>superzone_hier</code> compact outside (12–28x proven); makes dense pricing-scenario grids affordable; zone→superzone map registered in id_bridge</td><td>M</td><td>P4/P5</td><td>5, 7</td></tr>
+<tr><td><span class="badge b-fr">FR-19</span></td><td><b>Kernel Subarea Trajectory/Event Export (DTAT v1, design v2)</b> — <code>subarea_run.yml</code>-driven; kernel STREAMS clipped weighted policy-aware trajectory events for subarea/buffer-crossing paths (no column pool, no full paths — run evidence: full pool 38 min + paging vs 5.5 min without); <code>subarea.process</code> pipeline → gateway OD / CBI / GUI4GMNS; Q1–Q9 resolved</td><td>L</td><td><b>P1</b></td><td>5, 9, 10</td></tr>
+</table>
+
+<h2>Decision register <span class="n">— what is needed from you / the team</span></h2>
+<table>
+<tr><th>D</th><th>question</th><th>recommendation</th><th>blocks</th></tr>
+<tr><td><span class="badge b-d">D-1</span></td><td>Corridor extent</td><td><b>✓ DECIDED (c): both, inside-Beltway first</b> (model-ready managed-lane machinery), then outside with express lanes built per VTRC spec — see TRANSMODELER_HEAD2HEAD.md</td><td><b>done</b></td></tr>
+<tr><td><span class="badge b-d">D-6</span></td><td>Observation window — Oct-2025 I-66 is uncongested</td><td>new RITIS pull for a congested month, or pivot congestion demo to I-395 HOV</td><td><b>P0</b></td></tr>
+<tr><td><span class="badge b-d">D-7</span></td><td>I-66 Express TMCs + toll/volume feeds</td><td>request from RITIS / VDOT</td><td><b>P0</b></td></tr>
+<tr><td><span class="badge b-d">D-8</span></td><td>Convert AM OMX demand (I-66 peak = AM-EB)</td><td>yes (~1 day)</td><td><b>P0</b></td></tr>
+<tr><td><span class="badge b-d">D-11</span></td><td>DTA positioning for a partner agency contact</td><td>quasi-dynamic now, DTALite-main simulation as stretch — say so explicitly</td><td><b>P0</b></td></tr>
+<tr><td><span class="badge b-d">D-2</span></td><td>US-29 / US-50 in subarea</td><td>include (route diversion needs them)</td><td>P2</td></tr>
+<tr><td><span class="badge b-d">D-3</span></td><td>Boundary-zone handling</td><td>keep NVTA TAZs</td><td>P2</td></tr>
+<tr><td><span class="badge b-d">D-4</span></td><td>Managed-lane baseline vs recode</td><td>baseline = agency coding; E1 = HOV-exempt overlay</td><td>P2</td></tr>
+<tr><td><span class="badge b-d">D-5</span></td><td>Pricing realism v1</td><td>fixed per-period toll; proxy loop v1.1</td><td>P5</td></tr>
+<tr><td><span class="badge b-d">D-9</span></td><td>Demand classes</td><td>keep NVTA's 6</td><td>P1</td></tr>
+<tr><td><span class="badge b-d">D-10</span></td><td>Baseline acceptance thresholds</td><td>set before running (gateway ±%, interior R²)</td><td>P1</td></tr>
+<tr><td><span class="badge b-d">D-12</span></td><td>Calibration tolerances</td><td>speed MAE ≤5 mph, TT ±10%, P ±30 min (proposal)</td><td>P4</td></tr>
+<tr><td><span class="badge b-d">D-13</span></td><td>Volume ground truth</td><td>VDOT where available, S3 elsewhere, flagged per link</td><td>P4</td></tr>
+<tr><td><span class="badge b-d">D-14</span></td><td>Add I-66 to CBI closeout set</td><td>check contract scope first</td><td>P5</td></tr>
+<tr><td><span class="badge b-d">D-15</span></td><td>GUI4GMNS input contract additions</td><td>coordinate with GUI4GMNS side</td><td>P5</td></tr>
+</table>
+
+<h2>Phase plan <span class="n">— P1 is buildable today, no decisions needed</span></h2>
+<div class="gwrap"><div class="gantt">
+<div class="grow"><div class="glab"></div><div class="ghead">now</div><div class="ghead">→</div><div class="ghead">→</div><div class="ghead">→</div><div class="ghead">→</div><div class="ghead">→</div></div>
+<div class="grow"><div class="glab">P0 Decisions (D-1/6/7/8/11)</div><div class="gbar" style="background:var(--acc)">user/team</div><div class="gcell"></div><div class="gcell"></div><div class="gcell"></div><div class="gcell"></div><div class="gcell"></div></div>
+<div class="grow"><div class="glab">P1 Extract v0.1 + static baseline</div><div class="gbar" style="background:var(--ok)">FR-2,3,9</div><div class="gcell"></div><div class="gcell"></div><div class="gcell"></div><div class="gcell"></div><div class="gcell"></div></div>
+<div class="grow"><div class="glab">P2 Polygon + managed lanes</div><div class="gcell"></div><div class="gbar" style="background:var(--warn)">FR-1,4,5,6</div><div class="gbar" style="background:var(--warn)"></div><div class="gcell"></div><div class="gcell"></div><div class="gcell"></div></div>
+<div class="grow"><div class="glab">P3 Observed speed profile</div><div class="gcell"></div><div class="gbar" style="background:var(--warn)">FR-7,8,10</div><div class="gcell"></div><div class="gcell"></div><div class="gcell"></div><div class="gcell"></div></div>
+<div class="grow"><div class="glab">P4 Quasi-dynamic + calibration</div><div class="gcell"></div><div class="gcell"></div><div class="gcell"></div><div class="gbar" style="background:var(--build);color:#fff">FR-11,12</div><div class="gcell"></div><div class="gcell"></div></div>
+<div class="grow"><div class="glab">P5 Scenarios + viz + memo</div><div class="gcell"></div><div class="gcell"></div><div class="gcell"></div><div class="gcell"></div><div class="gbar" style="background:var(--build);color:#fff">FR-13,14</div><div class="gbar" style="background:var(--build);color:#fff"></div></div>
+</div></div>
+
+<footer>Sources: 00_project\I66_NVTA_PLAN.md · I-66_ams\DATA_SOURCES.md + 90_reference\AMS_LESSONS.md ·
+four read-only inventories of CBI_NVTA / subarea2gmns / kernel / dynamic_ODME run 2026-07-07 ·
+FHWA-HRT-13-036 (2013) · NVTA TransAction Modeling Workshop (2023-03-10) ·
+GUI4GMNS README + SHARED_CONTRACT (github.com/asu-trans-ai-lab/gui4gmns, cloned 2026-07-07).
+Private data policy: this dashboard references NVTA/INRIX paths but embeds no agency data — safe to keep local; do not publish.</footer>
+</main>
+<script>function go(n){document.getElementById('s'+n).scrollIntoView({behavior:'smooth',block:'start'})}</script>
+</body></html>

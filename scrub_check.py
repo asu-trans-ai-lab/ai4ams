@@ -11,6 +11,7 @@ FORBID_TEXT = [
     (re.compile(r"C:\\Users\\[A-Za-z0-9_]+"), "local user path", None),
     (re.compile(r"Drop" + "box", re.I), "personal cloud path", None),
     (re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.(?:com|edu|gov|org)"), "email address", None),
+    (re.compile(r"Castiglione|McClanahan|Paradkar|Chapuri|Ahiamadi|Dilmore|Jayakrishnan|Rouleau|Mahmassani|Zongwei|Xuesong|Abbasi|Cetin|Erdo"), "personal name (attribute by agency/role)", None),
     # field NAME in contract docs/templates is fine; actual payload = csv only
     (re.compile(r"measurement_tstamp", re.I), "probe reading payload marker", (".csv",)),
 ]

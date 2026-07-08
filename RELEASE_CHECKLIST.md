@@ -5,15 +5,19 @@
   mention NVTA/I-66 as provenance context only (names, not data). ✔
 - `schemes/tmc_matching_template.yml`, `schemes/subarea_run.template.yml` — placeholders only. ✔
 - `registers/expert_gap_validation_register.csv` — sourced entirely from public FHWA reports
-  (13-036, 21-082, 22-055) + public workshop; names are published interviewees. ✔
+  (13-036, 21-082, 22-055) + public workshop; **personal names scrubbed 2026-07-08 → agency/role
+  attributions only** (scrub_check enforces). ✔
+- `examples/dashboards/I66_STATS_DASHBOARD.html` + `I66_PROCESS_DASHBOARD.html` — external-review
+  dashboards; aggregate statistics only, names scrubbed. ✔
+- `DISCLAIMER.md` — education/research product; FHWA references acknowledged, no endorsement. ✔
 - `docs/*` — methodology text + measured statistics (statistics are ours; no raw data). ✔
 
-## Resolved by Xuesong (2026-07-08)
+## Resolved by the lab PI (2026-07-08)
 1. **I-17 / I-10 dashboards: APPROVED** — "it is fine to use INRIX-derived speed files."
    Both stay in `examples/dashboards/` (derived/aggregated speed values, no raw Readings).
    The one attribution email inside I10 (line 3864) remains whitelisted.
 
-## PENDING — Xuesong's call before push
+## PENDING — the lab PI's call before push
 1. Repo name final: **AI4AMS recommended** (alt `agentic-ams`) — one word from you.
 2. LICENSE: MIT added to match gui4gmns — confirm or swap.
 

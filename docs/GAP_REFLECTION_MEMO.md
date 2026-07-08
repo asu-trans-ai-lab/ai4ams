@@ -1,7 +1,7 @@
 # Gap Analysis & Reflection Memo — Operationalizing the 20-Year AMS/MRM Integration Vision
 
 **To:** Trans+AI Lab team (I-66 / NVTA case)
-**From:** Xuesong Zhou (drafted with AI-assisted synthesis of the four reference documents + codebase inventory)
+**From:** the lab PI (drafted with AI-assisted synthesis of the four reference documents + codebase inventory)
 **Date:** 2026-07-07
 **Location:** `I-66_ams\00_project\` — companion to I66_NVTA_PLAN.md and STREAMLINED_PROCESS.md
 **Reference PDFs:** `..\90_reference\` (FHWA-HRT-13-036 · NVTA Workshop 2023 · FHWA-HRT-21-082 SOPAGA · FHWA-HRT-22-055 Guidebook)

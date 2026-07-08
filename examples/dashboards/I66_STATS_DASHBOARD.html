@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>I-66 Key Statistics — measured results</title>
+<style>
+:root{--bg:#14181d;--panel:#1d232b;--panel2:#232b35;--line:#2c3540;--ink:#d8dee6;--mut:#8a94a3;
+--acc:#4db8ff;--ok:#57d977;--warn:#ffb45f;--bad:#ff5f5f}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,Segoe UI,sans-serif}
+#bar{position:sticky;top:0;z-index:9;display:flex;gap:12px;align-items:center;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+#bar b{color:var(--acc);font-size:16px}.sub{color:var(--mut);font-size:11.5px}
+.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 12px;text-align:center}
+.kpi .v{font-size:17px;font-weight:700;color:var(--acc)}.kpi .l{font-size:10px;color:var(--mut)}
+main{max-width:1150px;margin:0 auto;padding:16px 16px 60px}
+h2{font-size:14px;color:var(--acc);border-bottom:1px solid var(--line);padding-bottom:5px;margin:26px 0 10px}
+h2 .n{color:var(--mut);font-weight:400;font-size:11.5px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th{color:var(--mut);font-size:10.5px;letter-spacing:.05em;text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:5px 8px;border-bottom:1px solid #222a33;vertical-align:top}tr:hover td{background:#1c232c}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;border-radius:4px;padding:1px 8px;border:1px solid}
+.b-ok{color:var(--ok);border-color:var(--ok)}.b-pa{color:var(--warn);border-color:var(--warn)}.b-ga{color:var(--bad);border-color:var(--bad)}.b-mut{color:var(--mut);border-color:var(--line)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+.hbar{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:11.5px}
+.hbar .lbl{width:150px;color:var(--mut)}.hbar .bar{height:14px;border-radius:3px}
+.hbar .val{color:var(--ink);font-variant-numeric:tabular-nums}
+.big{font-size:26px;font-weight:800;color:var(--ok)}
+footer{color:var(--mut);font-size:11px;margin-top:34px;border-top:1px solid var(--line);padding-top:10px}
+</style></head><body>
+<div id="bar"><b>I-66 Key Statistics</b><span class="sub">measured results only · 2026-07-08 · sources: quality_gates.json, run logs, manifests (all regenerable)</span>
+<span style="display:flex;gap:8px;flex-wrap:wrap">
+<span class="kpi"><div class="v">R²=1.000</div><div class="l">G6 trajectory exactness</div></span>
+<span class="kpi"><div class="v">65 s</div><div class="l">per scenario (compact)</div></span>
+<span class="kpi"><div class="v">0.966</div><div class="l">G8 gateway-OD R²</div></span>
+<span class="kpi"><div class="v">0.00 ft</div><div class="l">ID-bridge max error</div></span>
+<span class="kpi"><div class="v">15/6/1</div><div class="l">expert gates ✓/◐/⏳</div></span>
+</span></div>
+<main>
+
+<h2>Quality gates — live measured values <span class="n">(feed: 02_extract\i66_pm_fast_response_v01\quality_gates.json)</span></h2>
+<table>
+<tr><th>gate</th><th>what it proves</th><th class="num">value</th><th>target</th><th>status</th></tr>
+<tr><td>G1 tier coverage</td><td>retained zone tiers carry the crossing demand</td><td class="num"><b>99.89%</b></td><td>≥99%</td><td><span class="badge b-ok">PASS</span></td></tr>
+<tr><td>G2 compression</td><td>effective zones after FOCUSING (with external-station protection)</td><td class="num"><b>1,854 / 3,858</b></td><td>—</td><td><span class="badge b-ok">36.5% demand rows</span></td></tr>
+<tr><td>G3 tier reproduction</td><td>independent reproduction of NVTA-2023 classification</td><td class="num"><b>663 significant</b> (ref 671)</td><td>≈ reference</td><td><span class="badge b-ok">MATCH</span></td></tr>
+<tr><td>G4 gate balance</td><td>entry vs exit weighted trips conserve</td><td class="num"><b>1.014</b> (203,252 / 200,426)</td><td>≈1.0</td><td><span class="badge b-ok">PASS</span></td></tr>
+<tr><td>G5 crossing demand</td><td>I-66 PM crossing magnitude</td><td class="num"><b>206,849</b> weighted trips / 8.85M OD pairs</td><td>—</td><td><span class="badge b-mut">measured</span></td></tr>
+<tr><td>G6 trajectory exactness</td><td>DTAT per-link volumes ≡ kernel link_performance (295 focus links)</td><td class="num"><b>R² 1.000 · ratio 1.000 · MAPE 0.0</b></td><td>R²≥0.99</td><td><span class="badge b-ok">EXACT</span></td></tr>
+<tr><td>G7 ODME value-add</td><td>RMSE with vs without measurements (TRB'06 convention)</td><td class="num">—</td><td>improvement column</td><td><span class="badge b-ga">blocked: RITIS window</span></td></tr>
+<tr><td>G8 compact fidelity</td><td>gateway OD compact vs full-res (≥50-veh pairs)</td><td class="num"><b>R² 0.966 · MAPE 5.8% · totals 1.0007</b> @cover_sig 0.90 (0.80: R² 0.87 <span class="badge b-ga">FAIL</span> → knob found)</td><td>R²≥0.95</td><td><span class="badge b-ok">PASS</span></td></tr>
+</table>
+
+<div class="grid2" style="margin-top:14px">
+<div class="card"><h2 style="margin-top:0">Run-time ledger <span class="n">— FHWA-13-036 discipline, actuals</span></h2>
+<div class="hbar"><span class="lbl">full-res 20-iter (regional)</span><span class="bar" style="width:335px;background:var(--mut)"></span><span class="val">5 m 35 s · gap 3.77% · 5.8 GB</span></div>
+<div class="hbar"><span class="lbl">full-pool DTAC (killed)</span><span class="bar" style="width:380px;background:var(--bad)"></span><span class="val">38 min @ iter 11 · PAGING</span></div>
+<div class="hbar"><span class="lbl">full-res 2-iter + DTAT</span><span class="bar" style="width:139px;background:var(--warn)"></span><span class="val">139 s · 8.85M traj · 2.3 GB</span></div>
+<div class="hbar"><span class="lbl">compact 2-iter + DTAT</span><span class="bar" style="width:65px;background:var(--ok)"></span><span class="val"><b>65 s · 5.9M traj</b></span></div>
+<div class="hbar"><span class="lbl">prepare / classify / compact</span><span class="bar" style="width:30px;background:var(--ok)"></span><span class="val">1.6 s / 12 s / 16 s</span></div>
+<div class="hbar"><span class="lbl">OMX→demand (AM, 6 modes)</span><span class="bar" style="width:71px;background:var(--ok)"></span><span class="val">71 s · totals exact</span></div>
+<div style="margin-top:8px;color:var(--mut);font-size:11.5px">2013 AMS-hub benchmark: 35–52 h manual → 7–11 h with hub (80% saving). Our subarea cycle: <span class="big" style="font-size:16px">~2 min</span> end-to-end on the compact model.</div></div>
+
+<div class="card"><h2 style="margin-top:0">FOCUSING zone tiers <span class="n">— measured from 8.85M crossing trajectories</span></h2>
+<div class="hbar"><span class="lbl">inside (red)</span><span class="bar" style="width:112px;background:#ff5f5f"></span><span class="val">557</span></div>
+<div class="hbar"><span class="lbl">significant (yellow)</span><span class="bar" style="width:229px;background:#ffb45f"></span><span class="val">1,142 (incl. 48 protected ext-station candidates)</span></div>
+<div class="hbar"><span class="lbl">less significant (green)</span><span class="bar" style="width:319px;background:#57d977"></span><span class="val">1,591 → 130 med superzones</span></div>
+<div class="hbar"><span class="lbl">not affected (white)</span><span class="bar" style="width:114px;background:#8a94a3"></span><span class="val">568 → 25 coarse superzones</span></div>
+<div style="margin-top:8px;color:var(--mut);font-size:11.5px">Demand: 29.86M → 10.9M rows (36.5%), volume conserved exactly per mode. External stations NEVER aggregated (ZONE_LAYER_REGISTRY rule 1). NVTA-2023 slide comparison: 671 significant on their subarea vs our 663 pre-protection — independent method reproduction.</div></div>
+</div>
+
+<h2>AM path — validated end to end <span class="n">(smoke run, original-ID network)</span></h2>
+<table>
+<tr><th>check</th><th class="num">result</th><th>status</th></tr>
+<tr><td>OMX zone mapping (index = MWCOG TAZ id, bridged)</td><td class="num">max diff <b>0.0</b> vs delivered PM demand, 3,709 rows</td><td><span class="badge b-ok">PROVEN</span></td></tr>
+<tr><td>AM totals loaded by kernel (6 modes)</td><td class="num">sov 1,749,140.93 · hov2 445,369 · hov3 135,274 · com 269,067 · trk 181,299 · apv 19,578</td><td><span class="badge b-ok">EXACT</span></td></tr>
+<tr><td>Closed-in-AM toll carriageway volume</td><td class="num"><b>0.0</b></td><td><span class="badge b-ok">ENFORCED</span></td></tr>
+<tr><td>AM directionality (I-66 total link volume)</td><td class="num">EB 1.33M &gt; WB 1.00M (peak toward DC)</td><td><span class="badge b-ok">SANE</span></td></tr>
+<tr><td>Inside-Beltway EB suppression (no HOV exemption coded: all classes pay)</td><td class="num">EB 27.6k vs WB 295.9k on truck-ban group</td><td><span class="badge b-pa">FINDING → scenario E1</span></td></tr>
+</table>
+
+<h2>Head-to-head targets <span class="n">— VTRC 22-R5 (TransModeler) reference values vs our status</span></h2>
+<table>
+<tr><th>metric</th><th class="num">VTRC value</th><th>our status</th></tr>
+<tr><td>Calibration: volumes in TOSAM threshold</td><td class="num">86.4% AM / 89.7% PM (MAE 10.0 / 8.7%)</td><td><span class="badge b-pa">to beat — Loop B, after RITIS window</span></td></tr>
+<tr><td>Calibration: travel times in threshold</td><td class="num">90% AM / 97.2% PM (MAE 9.2 / 8.2%)</td><td><span class="badge b-pa">to beat — Loop A/B</span></td></tr>
+<tr><td>GP travel-time improvement (EB AM, Gainesville→Rt-28)</td><td class="num">−36.1%</td><td><span class="badge b-mut">Phase A-outside reproduction target</span></td></tr>
+<tr><td>Corridor peak-hour throughput gain</td><td class="num">+20% AM / +19% PM</td><td><span class="badge b-mut">reproduction target</span></td></tr>
+<tr><td>ETL usage at I-495 approach</td><td class="num">6,645 AM / 8,774 PM veh</td><td><span class="badge b-mut">reproduction target (Loop C)</span></td></tr>
+<tr><td>HOT2+ vs HOT3+ (most congested zone speed)</td><td class="num">≈25 vs 40+ mph</td><td><span class="badge b-mut">E1-family scenario target</span></td></tr>
+<tr><td>Scenarios evaluated</td><td class="num">28 (self-stated limitation)</td><td><span class="badge b-ok">28 reproducible + dense grid @ 65 s/run</span></td></tr>
+<tr><td>VOT (adopted from their empirical work)</td><td class="num">SOV $30.5 / HOV2 $40 / HOV3 $60 (AM)</td><td><span class="badge b-ok">adopted (vot_policy: vtrc_22r5)</span></td></tr>
+</table>
+
+<h2>Expert validation register <span class="n">— 22 gates from 2013/2021/2022 FHWA reports + NVTA workshop (expert_gap_validation_register.csv)</span></h2>
+<table>
+<tr><th>status</th><th class="num">gates</th><th>the partial/blocked ones</th></tr>
+<tr><td><span class="badge b-ok">addressed</span></td><td class="num"><b>15</b></td><td>standards, conversion (proof: EG05/EG06), zone layers, subarea speed, SOP, archiving, blueprint, trajectory MOEs, config extensibility…</td></tr>
+<tr><td><span class="badge b-pa">partial</span></td><td class="num"><b>6</b></td><td>EG02 LOE estimator (FR-15) · EG04/EG12 observed-data calibration (RITIS) · EG11 M-3 streaming · EG13 behavior (FR-17) · EG19 GUI pack (FR-14)</td></tr>
+<tr><td><span class="badge b-ga">blocked</span></td><td class="num"><b>1</b></td><td>G7 / Loop A — congested observed window (RITIS request ready to send)</td></tr>
+</table>
+
+<footer>All numbers regenerable: subarea_run.yml + numbered steps (WORKFLOW_RUNBOOK.md). Companion dashboards: I66_PROCESS_DASHBOARD.html (process/FR/decisions) · quality_gates.json (machine-readable). Private NVTA/INRIX data referenced, never embedded — internal use.</footer>
+</main></body></html>
