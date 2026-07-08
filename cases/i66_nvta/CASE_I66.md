@@ -1,5 +1,13 @@
 # Case: I-66 Managed-Lane Corridor (NVTA) — the full AI4AMS process, with real artifacts
 
+> **▶ Loadable dashboard: [`dashboard.html`](dashboard.html)** — a single self-contained
+> page (double-click, or via GitHub Pages / htmlpreview) with the 10-step process,
+> the quality gates, the zone-tier composition, the gateway OD, the managed-lane
+> structure, and the embedded trajectory map. Trajectory-only map:
+> [`network_map.html`](network_map.html). Both embed their data inline — no server
+> or private files needed.
+
+
 This is the framework's first complete instance: an I-66 express/HOV/GP corridor subarea cut
 from a 17,754-node / 49,329-link / 3,858-zone regional model (Cube-derived, GMNS format),
 run through every gate. **All artifacts in `artifacts/` are post-run subarea derivatives**
