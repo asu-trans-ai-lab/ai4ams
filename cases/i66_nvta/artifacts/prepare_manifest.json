@@ -1,0 +1,58 @@
+{
+  "run_id": "i66_pm_fast_response_v01",
+  "generated": "2026-07-07T23:02:33",
+  "network": {
+    "folder": "C:/source_codes/0_source_code_new/CBI_NVTA/1_map_matching2026/data/raw/base_2025/pm",
+    "id_space": "original",
+    "n_nodes": 17754,
+    "n_links": 49329
+  },
+  "focus_links": 342,
+  "buffer_links": 192,
+  "subarea_nodes": 402,
+  "gates": {
+    "total": 176,
+    "entry": 88,
+    "exit": 88
+  },
+  "superzones": {
+    "method": "grid_v1",
+    "zones_full_res_inside": 557,
+    "outside_superzones": 187,
+    "zones_total": 3858
+  },
+  "demand_classes": [
+    {
+      "class_id": "GP",
+      "modes": [
+        "sov",
+        "com",
+        "trk",
+        "apv"
+      ]
+    },
+    {
+      "class_id": "HOV",
+      "modes": [
+        "hov2",
+        "hov3"
+      ]
+    },
+    {
+      "class_id": "EXPRESS",
+      "modes": []
+    }
+  ],
+  "lane_groups": {
+    "GP": 423,
+    "GP_TRUCKBAN_TOLLED": 61,
+    "EXPRESS_CLOSED_DIR": 50
+  },
+  "artifact_hashes": {
+    "boundary_gates.csv": "45cfbe735bc4e15b",
+    "policy_link_fields.csv": "7eaf90d159bc0dc6",
+    "subarea_link_ids.csv": "7366508d9a2a270d",
+    "zone_superzone_map.csv": "c82dfd555196a009"
+  },
+  "elapsed_sec": 1.57
+}

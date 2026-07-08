@@ -40,6 +40,7 @@ emails · the deliverable is a reproducible process, not a report.
 | `docs/` | workflow runbook (S0–S10 + calibration mini-loops), kernel trajectory-export design (DTAT v1), zone-layer registry rules, AMS/MRM lessons (FHWA 2013/2021/2022 + NVTA 2023), reflection memo |
 | `registers/` | `expert_gap_validation_register.csv` — 22 practitioner-sourced gates (all from public FHWA reports) |
 | `examples/dashboards/` | I-10 / I-17 corridor dashboards (self-contained HTML) — **license check pending, see RELEASE_CHECKLIST** |
+| `cases/i66_nvta/` | **the I-66 managed-lane case: full process walkthrough + post-run subarea artifacts** (gates, gateway OD, tier map, trajectory GeoJSON sample) |
 | kernel | the TAPLite/DTALite C++ kernel (incl. `trajectory_output` DTAT streamer) lives in its own repo; PR package `PR_FR19_trajectory_export.md` describes the feature |
 
 ## Quick start (subarea pipeline)

@@ -83,6 +83,10 @@ and mini-loops** — that's where integration efforts historically fail.
 
 ## 2. S5 — assignment, expanded (mini-steps)
 
+- **5.0 gmns_ready gate (MANDATORY, added 2026-07-08)** — run the GMNS readiness check
+  (`dtalite_qa check`: schema, geometry, modes, capacities, lane coding) on the SUBAREA or
+  COMPACT package before ANY kernel run. Readiness is re-earned whenever inputs change —
+  never inherited from the regional model's check.
 - **5.1 network load QC** — node/link/mode counts vs manifest; allowed_use inventory diff vs
   expected (per-period! AM≠PM sets per ITB_CODING_CONVENTION).
 - **5.2 demand load QC** — per-mode totals vs conversion manifest to the decimal (AM totals

@@ -1,0 +1,40 @@
+{
+  "modes": {
+    "sov_pm": {
+      "rows_before": 10200575,
+      "rows_after": 3163626,
+      "volume": 3010976.4
+    },
+    "hov2_pm": {
+      "rows_before": 6993724,
+      "rows_after": 2610225,
+      "volume": 1092153.8
+    },
+    "hov3_pm": {
+      "rows_before": 6513073,
+      "rows_after": 2479463,
+      "volume": 365543.7
+    },
+    "com_pm": {
+      "rows_before": 3825173,
+      "rows_after": 1627897,
+      "volume": 475656.3
+    },
+    "trk_pm": {
+      "rows_before": 2302972,
+      "rows_after": 994688,
+      "volume": 133234.0
+    },
+    "apv_pm": {
+      "rows_before": 20556,
+      "rows_after": 10030,
+      "volume": 21515.3
+    }
+  },
+  "n_superzones": 1854,
+  "n_zones": 3858,
+  "rows_before_total": 29856073,
+  "rows_after_total": 10885929,
+  "row_ratio": 0.3646,
+  "elapsed_sec": 22.8
+}

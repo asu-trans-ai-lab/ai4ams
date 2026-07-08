@@ -1,0 +1,41 @@
+{
+  "G1_crossing_volume_coverage_by_retained_tiers": {
+    "value": 0.99894,
+    "target": ">=0.99",
+    "pass": true
+  },
+  "G2_effective_zones": {
+    "value": 1854,
+    "from": 3858,
+    "od_size_ratio": 0.2309
+  },
+  "G3_tier_counts": {
+    "less_significant": 1591,
+    "significant": 1142,
+    "not_affected": 568,
+    "inside": 557,
+    "nvta_2023_reference": {
+      "inside": 420,
+      "significant": 671,
+      "less_significant": 2018,
+      "not_affected": 750
+    }
+  },
+  "G4_gate_flow": {
+    "entry_weighted": 203252.0,
+    "exit_weighted": 200426.0,
+    "entry_exit_ratio": 1.0141,
+    "internal_end_weight": 10020.0
+  },
+  "G5_crossing_demand": {
+    "od_pairs": 8850194,
+    "crossing_trips_weighted": 206849.0
+  },
+  "meta": {
+    "dtat": "C:/source_codes/0_source_code_new/CBI_NVTA/regional_pm/regional_pm/pm/_internal/trajectory_subarea.bin",
+    "final_iter": 1,
+    "cover_sig": 0.9,
+    "cover_less": 0.998,
+    "elapsed_sec": 16.2
+  }
+}
